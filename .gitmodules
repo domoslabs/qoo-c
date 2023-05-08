@@ -1,0 +1,3 @@
+[submodule "t-digest-c"]
+	path = t-digest-c
+	url = git@github.com:domoslabs/t-digest-c.git
