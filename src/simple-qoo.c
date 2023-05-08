@@ -115,6 +115,12 @@ double simple_qoo_statistics_get_percentile(struct simple_qoo_statistics *statis
     return td_quantile(statistics->empirical_distribution, percentile/100.0);
 }
 
+float domosm_linear_interpolation_between_percentiles(float perc2, float lat1, float lat3, float perc1, float perc3)
+{
+    //log_info("perc2: %.6f , lat1: %.6f, lat3: %.6f, perc1: %.6f, perc3: %.6f", perc2, lat1, lat3, perc1, perc3);
+    return ((perc2-perc1)*(lat3-lat1) / (perc3-perc1)) + lat1;
+}
+
 double simple_qoo_statistics_get_qoo(struct simple_qoo_statistics *statistics, struct simple_NR_list *nr, struct simple_QTA *offset_cdf){
     double qoo = 100;
     for (int i = 0; i < nr->nrp.num_percentiles; i++) {

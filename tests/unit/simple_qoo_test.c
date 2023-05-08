@@ -113,6 +113,23 @@ static void simple_qoo_statistics_test_1M_samples(void **state)
     assert_true(get_elapsed_time(&start) < 0.2);
 }
 
+static void test_example_from_readme(void **state)
+{
+    struct simple_qoo_statistics *stats = simple_qoo_statistics_create();
+    
+    //Add sample(s)
+    struct timespec measured_delay;
+    measured_delay.tv_sec = 0;
+    measured_delay.tv_nsec = 200 * 1000 * 1000; // 200ms
+    simple_qoo_statistics_add_sample(stats, &measured_delay);
+    
+    //Compute statistics
+    double rpm = simple_qoo_statistics_get_rpm(stats);
+    assert_float_equal(rpm, 300, 0.000001);
+    //Clean up
+    simple_qoo_statistics_destroy(stats);
+}
+
 int main(int argc, char *argv[])
 {   
     testfilepath = "./testfiles";
@@ -131,6 +148,7 @@ int main(int argc, char *argv[])
         cmocka_unit_test(test_simple_qoo_multiple_samples),
         cmocka_unit_test(simple_qoo_statistics_test_loss),
         cmocka_unit_test(simple_qoo_statistics_test_1M_samples),
+        cmocka_unit_test(test_example_from_readme),
         };
     return cmocka_run_group_tests(qed_standard_format_tests, NULL, NULL); //move list init to setup and teardown
 }
