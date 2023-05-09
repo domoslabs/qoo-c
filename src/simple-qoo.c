@@ -1,8 +1,8 @@
 #include <math.h>
 #include "simple-qoo.h"
 
-struct simple_qoo_statistics *simple_qoo_statistics_create(){
-    struct simple_qoo_statistics *stats = malloc(sizeof(struct simple_qoo_statistics));
+struct sqa_stats *sqa_stats_create(){
+    struct sqa_stats *stats = malloc(sizeof(struct sqa_stats));
     stats->number_of_samples = 0;
     stats->number_of_lost_packets = 0;
     stats->min.tv_sec = 0;
@@ -18,12 +18,12 @@ struct simple_qoo_statistics *simple_qoo_statistics_create(){
     return stats;
 }
 
-void simple_qoo_statistics_destroy(struct simple_qoo_statistics *statistics){
+void sqa_stats_destroy(struct sqa_stats *statistics){
     td_free(statistics->empirical_distribution);
     free(statistics);
 }
 
-void simple_qoo_statistics_add_sample(struct simple_qoo_statistics *stats, struct timespec *delay){
+void sqa_stats_add_sample(struct sqa_stats *stats, struct timespec *delay){
     //Sanity check
     if (delay->tv_sec <= 0 && delay->tv_nsec <= 0){
         printf("Error: Zero or Negative delay\n");
@@ -61,57 +61,57 @@ void simple_qoo_statistics_add_sample(struct simple_qoo_statistics *stats, struc
 }
 
 //Get functions for various statistics
-int simple_qoo_statistics_get_number_of_samples(struct simple_qoo_statistics *statistics){
+int sqa_stats_get_number_of_samples(struct sqa_stats *statistics){
     return statistics->number_of_samples;
 }
 
-int simple_qoo_statistics_get_number_of_lost_packets(struct simple_qoo_statistics *statistics){
+int sqa_stats_get_number_of_lost_packets(struct sqa_stats *statistics){
     return statistics->number_of_lost_packets;
 }
 
-double simple_qoo_statistics_get_loss_percentage(struct simple_qoo_statistics *statistics){
+double sqa_stats_get_loss_percentage(struct sqa_stats *statistics){
     return (double)100.0 * statistics->number_of_lost_packets / statistics->number_of_samples;
 }
 
-struct timespec *simple_qoo_statistics_get_min(struct simple_qoo_statistics *statistics){
+struct timespec *sqa_stats_get_min(struct sqa_stats *statistics){
     return &statistics->min;
 }
 
-struct timespec *simple_qoo_statistics_get_max(struct simple_qoo_statistics *statistics){
+struct timespec *sqa_stats_get_max(struct sqa_stats *statistics){
     return &statistics->max;
 }
 
-double simple_qoo_statistics_get_sum(struct simple_qoo_statistics *statistics){
+double sqa_stats_get_sum(struct sqa_stats *statistics){
     return statistics->shifted_sum + statistics->offset * statistics->number_of_samples;
 }
 
-struct timespec *simple_qoo_statistics_get_delay_eq_loss_threshold(struct simple_qoo_statistics *statistics){
+struct timespec *sqa_stats_get_delay_eq_loss_threshold(struct sqa_stats *statistics){
     return &statistics->delay_eq_loss_threshold;
 }
 
-double simple_qoo_statistics_get_mean(struct simple_qoo_statistics *statistics){
+double sqa_stats_get_mean(struct sqa_stats *statistics){
     return statistics->offset + (statistics->shifted_sum / (statistics->number_of_samples - statistics->number_of_lost_packets));
 }
 
-double simple_qoo_statistics_get_trimmed_mean(struct simple_qoo_statistics *statistics, double lower_cutoff, double upper_cutoff){
+double sqa_stats_get_trimmed_mean(struct sqa_stats *statistics, double lower_cutoff, double upper_cutoff){
     return td_trimmed_mean(statistics->empirical_distribution, lower_cutoff/100.0, upper_cutoff/100.0);
 }
 
-double simple_qoo_statistics_get_variance(struct simple_qoo_statistics *statistics){
+double sqa_stats_get_variance(struct sqa_stats *statistics){
     // Use the offset values of sum and sum_of_squares for numerical stability
     int number_of_latency_samples = statistics->number_of_samples - statistics->number_of_lost_packets;
     return (statistics->shifted_sum_of_squares - pow(statistics->shifted_sum, 2.0) / number_of_latency_samples) / (number_of_latency_samples);
 }
 
-double simple_qoo_statistics_get_standard_deviation(struct simple_qoo_statistics *statistics){
-    return sqrt(simple_qoo_statistics_get_variance(statistics));
+double sqa_stats_get_standard_deviation(struct sqa_stats *statistics){
+    return sqrt(sqa_stats_get_variance(statistics));
 }
 
-double simple_qoo_statistics_get_median(struct simple_qoo_statistics *statistics){
+double sqa_stats_get_median(struct sqa_stats *statistics){
     return td_quantile(statistics->empirical_distribution, 0.5);
 }
 
-double simple_qoo_statistics_get_percentile(struct simple_qoo_statistics *statistics, double percentile){
+double sqa_stats_get_percentile(struct sqa_stats *statistics, double percentile){
     return td_quantile(statistics->empirical_distribution, percentile/100.0);
 }
 
@@ -121,7 +121,7 @@ float domosm_linear_interpolation_between_percentiles(float perc2, float lat1, f
     return ((perc2-perc1)*(lat3-lat1) / (perc3-perc1)) + lat1;
 }
 
-double simple_qoo_statistics_get_qoo(struct simple_qoo_statistics *statistics, struct simple_NR_list *nr, struct simple_QTA *offset_cdf){
+double sqa_stats_get_qoo(struct sqa_stats *statistics, struct simple_NR_list *nr, struct simple_QTA *offset_cdf){
     double qoo = 100;
     for (int i = 0; i < nr->nrp.num_percentiles; i++) {
         double perc = nr->nrp.percentiles[i];
@@ -152,8 +152,8 @@ double simple_qoo_statistics_get_qoo(struct simple_qoo_statistics *statistics, s
     return qoo;
 }
 
-double simple_qoo_statistics_get_rpm(struct simple_qoo_statistics *statistics){
+double sqa_stats_get_rpm(struct sqa_stats *statistics){
     // This is a simplified RPM metric. The full version needs latency measurements for TCP, TLS and HTTP for "foreign" flows
     // and samples taken on a saturated flow. See: https://datatracker.ietf.org/doc/draft-ietf-ippm-responsiveness/
-    return 60.0/simple_qoo_statistics_get_mean(statistics);
+    return 60.0/sqa_stats_get_mean(statistics);
 }
