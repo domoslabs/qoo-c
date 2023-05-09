@@ -9,16 +9,15 @@ struct simple_QTA
     float latencies[32];
 };
 
+// Network requirements can be specified for a type of traffic
+// nr_perf is short for "Network Requirement for Perfection"
+// nr_useless is short for "Network Requirement Point of Uselessness"
+// See: https://www.ietf.org/id/draft-olden-ippm-qoo-00.html for details
 struct simple_NR_list
 {
     char type[32];
-    int traffic_type;
-    int report_session;
-    char report_name[32];
-    int MinThroughputRx;
-    int MinThroughputTx;
-    struct simple_QTA nrp;
-    struct simple_QTA nrpou;
+    struct simple_QTA nr_perf;
+    struct simple_QTA nr_useless;
 };
 
 #endif

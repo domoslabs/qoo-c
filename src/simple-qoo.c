@@ -117,31 +117,17 @@ double sqa_stats_get_percentile(struct sqa_stats *statistics, double percentile)
 
 float domosm_linear_interpolation_between_percentiles(float perc2, float lat1, float lat3, float perc1, float perc3)
 {
-    //log_info("perc2: %.6f , lat1: %.6f, lat3: %.6f, perc1: %.6f, perc3: %.6f", perc2, lat1, lat3, perc1, perc3);
     return ((perc2-perc1)*(lat3-lat1) / (perc3-perc1)) + lat1;
 }
 
-double sqa_stats_get_qoo(struct sqa_stats *statistics, struct simple_NR_list *nr, struct simple_QTA *offset_cdf){
+double sqa_stats_get_qoo(struct sqa_stats *statistics, struct simple_NR_list *nr){
     double qoo = 100;
-    for (int i = 0; i < nr->nrp.num_percentiles; i++) {
-        double perc = nr->nrp.percentiles[i];
+    for (int i = 0; i < nr->nr_perf.num_percentiles; i++) {
+        double perc = nr->nr_perf.percentiles[i];
         double mes_lat = td_quantile(statistics->empirical_distribution, (double)perc/100);
-        double nrp_lat = nr->nrp.latencies[i];
-        double nrpou_lat = nr->nrpou.latencies[i];
-        //Find two closest values in offset
-        double offset = 0;
-        for (int j = 0; j < offset_cdf->num_percentiles-1; j++) {
-            double perc_offset1 = offset_cdf->percentiles[j];
-            double perc_offset2  = offset_cdf->percentiles[j+1];
-            if (perc_offset1 < perc && perc <= perc_offset2) {
-                double lat_offset1 = offset_cdf->latencies[j];
-                double lat_offset2  = offset_cdf->latencies[j+1];
-                offset = domosm_linear_interpolation_between_percentiles(perc, lat_offset1, lat_offset2, perc_offset1, perc_offset2);
-                //log_info("Offset: %.6f, lat_offset1: %.6f, lat_offset2: %.6f,", offset, lat_offset1, lat_offset2);
-                break;
-            }
-        }
-        double qoo_part = (1 - (((mes_lat+offset) - nrp_lat) / (nrpou_lat - nrp_lat)))*100;
+        double nrp_lat = nr->nr_perf.latencies[i];
+        double nrpou_lat = nr->nr_useless.latencies[i];
+        double qoo_part = (1 - (((mes_lat) - nrp_lat) / (nrpou_lat - nrp_lat)))*100;
         if (qoo_part < 0) {
             qoo_part = 0;
         }

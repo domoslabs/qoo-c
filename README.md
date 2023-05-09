@@ -16,7 +16,7 @@ How to use:
 1. Create a sqa_stats data structure and add latency and packet loss samples.
 2. Calculate RPM, QoO, or any of the other quality metrics.
 
-Example use
+Example use (see tests/unit/simple_qoo_test.c)
 ---
     struct sqa_stats *stats = sqa_stats_create(); //SQA is short for Simple Quality Attenuation
     
@@ -27,9 +27,12 @@ Example use
     sqa_stats_add_sample(stats, &measured_delay);
     
     //Compute statistics
+    struct simple_NR_list *nr = create_network_requirement();
+    double qoo = sqa_stats_get_qoo(stats, nr);
     double rpm = sqa_stats_get_rpm(stats);
 
     //Clean up
+    free(nr);
     sqa_stats_destroy(stats);
 ---
 

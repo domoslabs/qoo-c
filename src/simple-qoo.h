@@ -37,7 +37,7 @@ double sqa_stats_get_variance(struct sqa_stats *statistics);
 double sqa_stats_get_standard_deviation(struct sqa_stats *statistics);
 double sqa_stats_get_median(struct sqa_stats *statistics);
 double sqa_stats_get_percentile(struct sqa_stats *statistics, double percentile);
-double sqa_stats_get_qoo(struct sqa_stats *statistics, struct simple_NR_list *nr, struct simple_QTA *offset_cdf);
+double sqa_stats_get_qoo(struct sqa_stats *statistics, struct simple_NR_list *nr);
 double sqa_stats_get_rpm(struct sqa_stats *statistics);
 
 #endif

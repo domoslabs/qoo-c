@@ -102,6 +102,31 @@ static void sqa_stats_test_1M_samples(void **state)
     sqa_stats_destroy(stats);
 }
 
+struct simple_NR_list* create_network_requirement()
+{
+    struct simple_NR_list *nr = malloc(sizeof(struct simple_NR_list));
+
+    nr->nr_perf.percentiles[0] = 50;
+    nr->nr_perf.percentiles[1] = 90;
+    nr->nr_perf.percentiles[2] = 99;
+    nr->nr_perf.latencies[0] = 0.02;
+    nr->nr_perf.latencies[1] = 0.02;
+    nr->nr_perf.latencies[2] = 0.02;
+    nr->nr_perf.num_percentiles = 3;
+    nr->nr_perf.num_latencies = 3;
+
+    nr->nr_useless.percentiles[0] = 50;
+    nr->nr_useless.percentiles[1] = 90;
+    nr->nr_useless.percentiles[2] = 99;
+    nr->nr_useless.latencies[0] = 0.25;
+    nr->nr_useless.latencies[1] = 0.3;
+    nr->nr_useless.latencies[2] = 0.4;
+    nr->nr_useless.num_percentiles = 3;
+    nr->nr_useless.num_latencies = 3;
+
+    return nr;
+}
+
 static void test_example_from_readme(void **state)
 {
     struct sqa_stats *stats = sqa_stats_create();
@@ -113,9 +138,15 @@ static void test_example_from_readme(void **state)
     sqa_stats_add_sample(stats, &measured_delay);
     
     //Compute statistics
+    //QoO
+    struct simple_NR_list *nr = create_network_requirement();
+    double qoo = sqa_stats_get_qoo(stats, nr);
+    assert_float_equal(qoo, 21.739, 0.001);
+    //RPM
     double rpm = sqa_stats_get_rpm(stats);
     assert_float_equal(rpm, 300, 0.000001);
     //Clean up
+    free(nr);
     sqa_stats_destroy(stats);
 }
 
