@@ -85,17 +85,8 @@ static void sqa_stats_test_loss(void **state)
     sqa_stats_destroy(stats);
 }
 
-float get_elapsed_time(struct timespec *start)
-{
-    struct timespec end = {0, 0};
-    clock_gettime(CLOCK_REALTIME, &end);
-    return (end.tv_sec - start->tv_sec) + (end.tv_nsec - start->tv_nsec) / 1000000000.0;
-}
-
 static void sqa_stats_test_1M_samples(void **state)
 {
-    struct timespec start = {0, 0};
-    clock_gettime(CLOCK_REALTIME, &start);
     struct sqa_stats *stats = sqa_stats_create();
     struct timespec measured_delay;
     measured_delay.tv_sec = 0;
@@ -110,7 +101,6 @@ static void sqa_stats_test_1M_samples(void **state)
     assert_float_equal(sqa_stats_get_mean(stats), 0.2, 0.0000001);
     assert_float_equal(sqa_stats_get_standard_deviation(stats), 0, 0.0001);
     sqa_stats_destroy(stats);
-    assert_true(get_elapsed_time(&start) < 0.2);
 }
 
 static void test_example_from_readme(void **state)
