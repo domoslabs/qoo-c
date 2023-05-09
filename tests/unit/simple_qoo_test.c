@@ -9,7 +9,6 @@
 #include <sys/time.h>
 
 #include "../../src/simple-qoo.h"
-#include "../../src/qed-standard-format.h"
 
 char *testfilepath = NULL;
 

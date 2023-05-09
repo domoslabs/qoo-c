@@ -5,8 +5,6 @@ include_directories(../t-digest-c/src/)
 
 set( qoo_SOURCES ${qoo_SOURCES}
     simple-qoo.c simple-qoo.h
-    ringbuffer.c ringbuffer.h
-    tdigest-extras.c tdigest-extras.h
     ../t-digest-c/src/tdigest.c ../t-digest-c/src/tdigest.h
 )
 
