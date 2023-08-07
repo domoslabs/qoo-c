@@ -81,6 +81,14 @@ struct timespec *sqa_stats_get_max(struct sqa_stats *statistics){
     return &statistics->max;
 }
 
+double sqa_stats_get_min_as_seconds(struct sqa_stats *statistics){
+    return tspecusec(&statistics->min) / 1000000.0;
+}
+
+double sqa_stats_get_max_as_seconds(struct sqa_stats *statistics){
+    return tspecusec(&statistics->max) / 1000000.0;
+}
+
 double sqa_stats_get_sum(struct sqa_stats *statistics){
     return statistics->shifted_sum + statistics->offset * statistics->number_of_samples;
 }

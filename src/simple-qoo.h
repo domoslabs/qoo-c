@@ -29,6 +29,8 @@ int sqa_stats_get_number_of_lost_packets(struct sqa_stats *statistics);
 double sqa_stats_get_loss_percentage(struct sqa_stats *statistics);
 struct timespec *sqa_stats_get_min(struct sqa_stats *statistics);
 struct timespec *sqa_stats_get_max(struct sqa_stats *statistics);
+double sqa_stats_get_min_as_seconds(struct sqa_stats *statistics);
+double sqa_stats_get_max_as_seconds(struct sqa_stats *statistics);
 struct timespec *sqa_stats_get_delay_eq_loss_threshold(struct sqa_stats *statistics);
 double sqa_stats_get_sum(struct sqa_stats *statistics);
 double sqa_stats_get_mean(struct sqa_stats *statistics);
