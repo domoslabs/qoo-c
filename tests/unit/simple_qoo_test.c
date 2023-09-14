@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     if (argc==1) {
         printf("no testfile path given as argument\n");
         testfilepath = "./testfiles";
-        char cwd[1024];
+        // char cwd[1024];
         // getcwd(cwd, sizeof(cwd));
         // printf("Current working dir: %s\n", cwd);
         // exit(1);
