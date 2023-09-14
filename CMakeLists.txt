@@ -10,8 +10,8 @@ option(BUILD_SHARED "Build shared library" ON)
 option(BUILD_STATIC "Build static library" ON)
 option(BUILD_TESTS "Build tests" ON)
 OPTION(ENABLE_CODECOVERAGE "Enable code coverage testing support" OFF)
-OPTION(ENABLE_PROFILE "Enable code profiling support" ON)
-option(BUILD_EXAMPLES "Build examples" ON)
+OPTION(ENABLE_PROFILE "Enable code profiling support" OFF)
+option(BUILD_EXAMPLES "Build examples" OFF)
 
 # --- Build properties ---
 
