@@ -8,7 +8,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 # --- Build options ---
 option(BUILD_SHARED "Build shared library" ON)
 option(BUILD_STATIC "Build static library" ON)
-option(BUILD_BENCHMARK "Build benchmark" ON)
 option(BUILD_TESTS "Build tests" ON)
 OPTION(ENABLE_CODECOVERAGE "Enable code coverage testing support" OFF)
 OPTION(ENABLE_PROFILE "Enable code profiling support" ON)
@@ -89,6 +88,6 @@ include_directories("t-digest-c/src")
 # --- Unit Tests ---
 ENABLE_TESTING()
 
-if(BUILD_TESTS OR BUILD_BENCHMARK)
+if(BUILD_TESTS)
   add_subdirectory("tests")
 endif()
