@@ -2,7 +2,7 @@
 
 Quality of Outcome is a network performance metric.
 QoO scores are calculated by comparing network measurements to application requirements.
-The network measurements are Quality Attenuation measurements as specified in [TR-452.1](https://www.broadband-forum.org/technical/download/TR-452.1.pdf) from the Broadband Forum, but excluding the computation of G, S, and V.
+The network measurements are Quality Attenuation measurements as specified in [TR-452.1](https://www.broadband-forum.org/pdfs/tr-452.1-1-0-0.pdf) from the Broadband Forum, but excluding the computation of G, S, and V.
 
 TR-452.1 can be found here: https://www.broadband-forum.org/technical/download/TR-452.1.pdf
 
