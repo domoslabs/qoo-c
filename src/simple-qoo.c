@@ -25,11 +25,6 @@ void sqa_stats_destroy(struct sqa_stats *statistics){
 }
 
 void sqa_stats_add_sample(struct sqa_stats *stats, struct timespec *delay){
-    //Sanity check
-    if (delay->tv_sec <= 0 && delay->tv_nsec <= 0){
-        fprintf(stderr, "Error: Zero or Negative delay\n");
-        return;
-    }
     stats->number_of_samples++;
     // A sample is either a lost packet or a packet with a delay
     if (delay->tv_sec > stats->delay_eq_loss_threshold.tv_sec || 
