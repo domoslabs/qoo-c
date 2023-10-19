@@ -24,6 +24,13 @@ void sqa_stats_destroy(struct sqa_stats *statistics){
     free(statistics);
 }
 
+void sqa_stats_add_sample_nsec(struct sqa_stats *stats, long delay_nsec){
+    struct timespec delay;
+    delay.tv_sec = delay_nsec / 1000000000;
+    delay.tv_nsec = delay_nsec % 1000000000;
+    sqa_stats_add_sample(stats, &delay);
+}
+
 void sqa_stats_add_sample(struct sqa_stats *stats, struct timespec *delay){
     stats->number_of_samples++;
     // A sample is either a lost packet or a packet with a delay
@@ -56,6 +63,11 @@ void sqa_stats_add_sample(struct sqa_stats *stats, struct timespec *delay){
     }
 }
 
+void sqa_stats_count_loss(struct sqa_stats *stats) {
+    stats->number_of_samples += 1;
+    stats->number_of_lost_packets += 1;
+}
+
 //Get functions for various statistics
 int sqa_stats_get_number_of_samples(struct sqa_stats *statistics){
     return statistics->number_of_samples;
@@ -70,52 +82,76 @@ double sqa_stats_get_loss_percentage(struct sqa_stats *statistics){
 }
 
 struct timespec *sqa_stats_get_min(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return NULL; // No samples (only lost packets)
     return &statistics->min;
 }
 
 struct timespec *sqa_stats_get_max(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return NULL; // No samples (only lost packets)
     return &statistics->max;
 }
 
 double sqa_stats_get_min_as_seconds(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     return tspecusec(&statistics->min) / 1000000.0;
 }
 
 double sqa_stats_get_max_as_seconds(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     return tspecusec(&statistics->max) / 1000000.0;
 }
 
 double sqa_stats_get_sum(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     return statistics->shifted_sum + statistics->offset * statistics->number_of_samples;
 }
 
 struct timespec *sqa_stats_get_delay_eq_loss_threshold(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return NULL; // No samples (only lost packets)
     return &statistics->delay_eq_loss_threshold;
 }
 
 double sqa_stats_get_mean(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     return statistics->offset + (statistics->shifted_sum / (statistics->number_of_samples - statistics->number_of_lost_packets));
 }
 
 double sqa_stats_get_trimmed_mean(struct sqa_stats *statistics, double lower_cutoff, double upper_cutoff){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     return td_trimmed_mean(statistics->empirical_distribution, lower_cutoff/100.0, upper_cutoff/100.0);
 }
 
 double sqa_stats_get_variance(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     // Use the offset values of sum and sum_of_squares for numerical stability
     int number_of_latency_samples = statistics->number_of_samples - statistics->number_of_lost_packets;
     return (statistics->shifted_sum_of_squares - pow(statistics->shifted_sum, 2.0) / number_of_latency_samples) / (number_of_latency_samples);
 }
 
 double sqa_stats_get_standard_deviation(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     return sqrt(sqa_stats_get_variance(statistics));
 }
 
 double sqa_stats_get_median(struct sqa_stats *statistics){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     return td_quantile(statistics->empirical_distribution, 0.5);
 }
 
 double sqa_stats_get_percentile(struct sqa_stats *statistics, double percentile){
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     return td_quantile(statistics->empirical_distribution, percentile/100.0);
 }
 
@@ -145,5 +181,7 @@ double sqa_stats_get_qoo(struct sqa_stats *statistics, struct simple_NR_list *nr
 double sqa_stats_get_rpm(struct sqa_stats *statistics){
     // This is a simplified RPM metric. The full version needs latency measurements for TCP, TLS and HTTP for "foreign" flows
     // and samples taken on a saturated flow. See: https://datatracker.ietf.org/doc/draft-ietf-ippm-responsiveness/
+    if (statistics->number_of_samples == statistics->number_of_lost_packets)
+        return 0.0; // No samples (only lost packets)
     return 60.0/sqa_stats_get_mean(statistics);
 }

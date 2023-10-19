@@ -22,6 +22,8 @@ struct sqa_stats
 struct sqa_stats *sqa_stats_create();
 void sqa_stats_destroy(struct sqa_stats *statistics);
 void sqa_stats_add_sample(struct sqa_stats *statistics, struct timespec *delay);
+void sqa_stats_add_sample_nsec(struct sqa_stats *statistics, long delay);
+void sqa_stats_count_loss(struct sqa_stats *statistics);
 
 //Get the various statistics
 int sqa_stats_get_number_of_samples(struct sqa_stats *statistics);
@@ -34,8 +36,10 @@ double sqa_stats_get_max_as_seconds(struct sqa_stats *statistics);
 struct timespec *sqa_stats_get_delay_eq_loss_threshold(struct sqa_stats *statistics);
 double sqa_stats_get_sum(struct sqa_stats *statistics);
 double sqa_stats_get_mean(struct sqa_stats *statistics);
+double sqa_stats_get_mean_as_seconds(struct sqa_stats *statistics);
 double sqa_stats_get_trimmed_mean(struct sqa_stats *statistics, double lower_cutoff, double upper_cutoff);
 double sqa_stats_get_variance(struct sqa_stats *statistics);
+double sqa_stats_get_variance_as_seconds(struct sqa_stats *statistics);
 double sqa_stats_get_standard_deviation(struct sqa_stats *statistics);
 double sqa_stats_get_median(struct sqa_stats *statistics);
 double sqa_stats_get_percentile(struct sqa_stats *statistics, double percentile);
