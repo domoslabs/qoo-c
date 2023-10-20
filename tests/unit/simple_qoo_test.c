@@ -90,8 +90,7 @@ static void sqa_stats_test_1M_samples(void **state)
     struct timespec measured_delay;
     measured_delay.tv_sec = 0;
     measured_delay.tv_nsec = 200 * 1000 * 1000; // 200ms
-    for (int i = 0; i < 1000000; i++)
-    {
+    for (int i = 0; i < 1000000; i++) {
         sqa_stats_add_sample(stats, &measured_delay);
     }
     assert_int_equal(sqa_stats_get_number_of_samples(stats), 1000000);
@@ -102,7 +101,7 @@ static void sqa_stats_test_1M_samples(void **state)
     sqa_stats_destroy(stats);
 }
 
-struct simple_NR_list* create_network_requirement()
+struct simple_NR_list *create_network_requirement()
 {
     struct simple_NR_list *nr = malloc(sizeof(struct simple_NR_list));
 
@@ -130,37 +129,37 @@ struct simple_NR_list* create_network_requirement()
 static void test_example_from_readme(void **state)
 {
     struct sqa_stats *stats = sqa_stats_create();
-    
-    //Add sample(s)
+
+    // Add sample(s)
     struct timespec measured_delay;
     measured_delay.tv_sec = 0;
     measured_delay.tv_nsec = 200 * 1000 * 1000; // 200ms
     sqa_stats_add_sample(stats, &measured_delay);
-    
-    //Compute statistics
-    //QoO
+
+    // Compute statistics
+    // QoO
     struct simple_NR_list *nr = create_network_requirement();
     double qoo = sqa_stats_get_qoo(stats, nr);
     assert_float_equal(qoo, 21.739, 0.001);
-    //RPM
+    // RPM
     double rpm = sqa_stats_get_rpm(stats);
     assert_float_equal(rpm, 300, 0.000001);
-    //Clean up
+    // Clean up
     free(nr);
     sqa_stats_destroy(stats);
 }
 
 int main(int argc, char *argv[])
-{   
+{
     testfilepath = "./testfiles";
-    if (argc==1) {
+    if (argc == 1) {
         printf("no testfile path given as argument\n");
         testfilepath = "./testfiles";
         // char cwd[1024];
         // getcwd(cwd, sizeof(cwd));
         // printf("Current working dir: %s\n", cwd);
         // exit(1);
-    } else if (argc==2) {
+    } else if (argc == 2) {
         testfilepath = argv[1];
     }
     const struct CMUnitTest qed_standard_format_tests[] = {
@@ -169,6 +168,6 @@ int main(int argc, char *argv[])
         cmocka_unit_test(sqa_stats_test_loss),
         cmocka_unit_test(sqa_stats_test_1M_samples),
         cmocka_unit_test(test_example_from_readme),
-        };
-    return cmocka_run_group_tests(qed_standard_format_tests, NULL, NULL); //move list init to setup and teardown
+    };
+    return cmocka_run_group_tests(qed_standard_format_tests, NULL, NULL); // move list init to setup and teardown
 }

@@ -9,8 +9,7 @@
 // Simple Quality Attenuation (SQA) statistics
 // Implements a quality attenuation value estimator following the specification of TR-452.1,
 // but excluding the G, S, and V decomposition.
-struct sqa_stats
-{
+struct sqa_stats {
     int number_of_samples, number_of_lost_packets;
     // Use timespec for the exact measurements:
     struct timespec min, max, delay_eq_loss_threshold;
@@ -25,7 +24,7 @@ void sqa_stats_add_sample(struct sqa_stats *statistics, struct timespec *delay);
 void sqa_stats_add_sample_nsec(struct sqa_stats *statistics, long delay);
 void sqa_stats_count_loss(struct sqa_stats *statistics);
 
-//Get the various statistics
+// Get the various statistics
 int sqa_stats_get_number_of_samples(struct sqa_stats *statistics);
 int sqa_stats_get_number_of_lost_packets(struct sqa_stats *statistics);
 double sqa_stats_get_loss_percentage(struct sqa_stats *statistics);
