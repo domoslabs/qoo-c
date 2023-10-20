@@ -43,7 +43,7 @@
 // Common
 //
 typedef int BOOL;
-#define TRUE  1 // Boolean true
+#define TRUE 1  // Boolean true
 #define FALSE 0 // Boolean false
 // Macros for 64 bit variables to switch to and from network
 #ifndef ntohll
@@ -57,18 +57,18 @@ typedef int BOOL;
 //
 // Time-related
 //
-#define SECINDAY     (60 * 60 * 24)         // sec in a day
-#define MSECINSEC    1000                   // msec in a second
-#define MSECINMIN    (MSECINSEC * 60)       // msec in a minute
-#define MSECINDAY    (SECINDAY * MSECINSEC) // msec in a day
-#define USECINSEC    1000000                // usec in a second
-#define USECINMSEC   1000                   // usec in a msec
-#define USECADJ      (USECINMSEC / 2)       // usec adjustment for rounding
-#define NSECINSEC    1000000000             // nsec in a sec
-#define NSECINMSEC   1000000                // nsec in a msec
-#define NSECINUSEC   1000                   // nsec in a usec
-#define NSECADJ      (NSECINUSEC / 2)       // nsec adjustment for rounding
-#define NSECADJ_MSEC (NSECINMSEC / 2)       // nsec adjustment for rounding
+#define SECINDAY (60 * 60 * 24)          // sec in a day
+#define MSECINSEC 1000                   // msec in a second
+#define MSECINMIN (MSECINSEC * 60)       // msec in a minute
+#define MSECINDAY (SECINDAY * MSECINSEC) // msec in a day
+#define USECINSEC 1000000                // usec in a second
+#define USECINMSEC 1000                  // usec in a msec
+#define USECADJ (USECINMSEC / 2)         // usec adjustment for rounding
+#define NSECINSEC 1000000000             // nsec in a sec
+#define NSECINMSEC 1000000               // nsec in a msec
+#define NSECINUSEC 1000                  // nsec in a usec
+#define NSECADJ (NSECINUSEC / 2)         // nsec adjustment for rounding
+#define NSECADJ_MSEC (NSECINMSEC / 2)    // nsec adjustment for rounding
 
 //----------------------------------------------------------------------------
 // Macros for timespec operations
@@ -76,51 +76,51 @@ typedef int BOOL;
 //
 // Add timespec (keep nsec within bounds)
 //
-#define tspecplus(a, b, result)                                  \
-        do {                                                     \
-                (result)->tv_sec  = (a)->tv_sec + (b)->tv_sec;   \
-                (result)->tv_nsec = (a)->tv_nsec + (b)->tv_nsec; \
-                while ((result)->tv_nsec >= NSECINSEC) {         \
-                        ++(result)->tv_sec;                      \
-                        (result)->tv_nsec -= NSECINSEC;          \
-                }                                                \
-        } while (0)
+#define tspecplus(a, b, result)                                                                                        \
+    do {                                                                                                               \
+        (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;                                                                  \
+        (result)->tv_nsec = (a)->tv_nsec + (b)->tv_nsec;                                                               \
+        while ((result)->tv_nsec >= NSECINSEC) {                                                                       \
+            ++(result)->tv_sec;                                                                                        \
+            (result)->tv_nsec -= NSECINSEC;                                                                            \
+        }                                                                                                              \
+    } while (0)
 //
 // Subtract timespec (keep nsec within bounds)
 //
-#define tspecminus(a, b, result)                                 \
-        do {                                                     \
-                (result)->tv_sec  = (a)->tv_sec - (b)->tv_sec;   \
-                (result)->tv_nsec = (a)->tv_nsec - (b)->tv_nsec; \
-                while ((result)->tv_nsec < 0) {                  \
-                        --(result)->tv_sec;                      \
-                        (result)->tv_nsec += NSECINSEC;          \
-                }                                                \
-        } while (0)
+#define tspecminus(a, b, result)                                                                                       \
+    do {                                                                                                               \
+        (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;                                                                  \
+        (result)->tv_nsec = (a)->tv_nsec - (b)->tv_nsec;                                                               \
+        while ((result)->tv_nsec < 0) {                                                                                \
+            --(result)->tv_sec;                                                                                        \
+            (result)->tv_nsec += NSECINSEC;                                                                            \
+        }                                                                                                              \
+    } while (0)
 //
 // Multiply timespec by a scalar
 //
-#define tspecmul(a, b, result)                                  \
-        do {                                                    \
-                (result)->tv_sec  = (a)->tv_sec * (b);          \
-                (result)->tv_nsec = (a)->tv_nsec * (b);         \
-                while ((result)->tv_nsec >= NSECINSEC) {        \
-                        ++(result)->tv_sec;                     \
-                        (result)->tv_nsec -= NSECINSEC;         \
-                }                                               \
-        } while (0)                                             \
-//
-// Copy timespec
-//
-#define tspeccpy(d, s)                       \
-        do {                                 \
-                (d)->tv_sec  = (s)->tv_sec;  \
-                (d)->tv_nsec = (s)->tv_nsec; \
-        } while (0)
+#define tspecmul(a, b, result)                                                                                         \
+    do {                                                                                                               \
+        (result)->tv_sec = (a)->tv_sec * (b);                                                                          \
+        (result)->tv_nsec = (a)->tv_nsec * (b);                                                                        \
+        while ((result)->tv_nsec >= NSECINSEC) {                                                                       \
+            ++(result)->tv_sec;                                                                                        \
+            (result)->tv_nsec -= NSECINSEC;                                                                            \
+        }                                                                                                              \
+    } while (0) //                                                                                                     \
+        // Copy timespec                                                                                               \
+        //
+#define tspeccpy(d, s)                                                                                                 \
+    do {                                                                                                               \
+        (d)->tv_sec = (s)->tv_sec;                                                                                     \
+        (d)->tv_nsec = (s)->tv_nsec;                                                                                   \
+    } while (0)
 //
 // Compare timespec values
 //
-#define tspeccmp(a, b, CMP) (((a)->tv_sec == (b)->tv_sec) ? ((a)->tv_nsec CMP(b)->tv_nsec) : ((a)->tv_sec CMP(b)->tv_sec))
+#define tspeccmp(a, b, CMP)                                                                                            \
+    (((a)->tv_sec == (b)->tv_sec) ? ((a)->tv_nsec CMP(b)->tv_nsec) : ((a)->tv_sec CMP(b)->tv_sec))
 //
 // Convert timespec to us
 //
