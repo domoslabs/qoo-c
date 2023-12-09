@@ -10,6 +10,10 @@
 
 #include "../../src/simple-qoo.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
+
 char *testfilepath = NULL;
 
 static void test_sqa_stats_single_sample(void **state)
@@ -148,6 +152,8 @@ static void test_example_from_readme(void **state)
     free(nr);
     sqa_stats_destroy(stats);
 }
+
+#pragma GCC diagnostic pop
 
 int main(int argc, char *argv[])
 {
