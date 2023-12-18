@@ -10,10 +10,13 @@
 
 #include "../../src/simple-qoo.h"
 
+#define UNUSED(x) (void)(x)
+
 char *testfilepath = NULL;
 
 static void test_sqa_stats_single_sample(void **state)
 {
+    UNUSED(state);
     struct sqa_stats *stats = sqa_stats_create();
     struct timespec measured_delay;
     measured_delay.tv_sec = 0;
@@ -44,6 +47,7 @@ static void test_sqa_stats_single_sample(void **state)
 
 static void test_sqa_stats_multiple_samples(void **state)
 {
+    UNUSED(state);
     struct sqa_stats *stats = sqa_stats_create();
     struct timespec measured_delay;
     measured_delay.tv_sec = 0;
@@ -72,6 +76,7 @@ static void test_sqa_stats_multiple_samples(void **state)
 
 static void sqa_stats_test_loss(void **state)
 {
+    UNUSED(state);
     struct sqa_stats *stats = sqa_stats_create();
     struct timespec measured_delay;
     measured_delay.tv_sec = 15;
@@ -86,6 +91,7 @@ static void sqa_stats_test_loss(void **state)
 
 static void sqa_stats_test_1M_samples(void **state)
 {
+    UNUSED(state);
     struct sqa_stats *stats = sqa_stats_create();
     struct timespec measured_delay;
     measured_delay.tv_sec = 0;
@@ -128,6 +134,7 @@ struct simple_NR_list *create_network_requirement()
 
 static void test_example_from_readme(void **state)
 {
+    UNUSED(state);
     struct sqa_stats *stats = sqa_stats_create();
 
     // Add sample(s)

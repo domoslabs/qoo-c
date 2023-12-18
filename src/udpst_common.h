@@ -108,8 +108,9 @@ typedef int BOOL;
             ++(result)->tv_sec;                                                                                        \
             (result)->tv_nsec -= NSECINSEC;                                                                            \
         }                                                                                                              \
-    } while (0) //                                                                                                     \
-        // Copy timespec                                                                                               \
+    } while (0)                             
+        //                                                                                                             
+        // Copy timespec                                                                                               
         //
 #define tspeccpy(d, s)                                                                                                 \
     do {                                                                                                               \
